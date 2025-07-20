@@ -2,11 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NODE_VERSION = '18'  // Adjust as needed
-    }
-
-    tools {
-        nodejs "${NODE_VERSION}"
+        NODE_VERSION = '18'
     }
 
     stages {
@@ -16,22 +12,50 @@ pipeline {
             }
         }
 
+        stage('Install Node.js') {
+            steps {
+                sh '''
+                    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    nvm install $NODE_VERSION
+                    nvm use $NODE_VERSION
+                    node -v
+                    npm -v
+                '''
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    nvm use $NODE_VERSION
+                    npm install
+                '''
             }
         }
 
         stage('Start Application') {
             steps {
-                // Run in background (non-blocking) if needed, or use `nohup`
-                sh 'npm run start &'
+                sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    nvm use $NODE_VERSION
+                    npm start &
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'npm test'
+                sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    nvm use $NODE_VERSION
+                    npm test
+                '''
             }
         }
     }
