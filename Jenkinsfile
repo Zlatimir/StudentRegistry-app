@@ -26,8 +26,8 @@ pipeline {
         stage('Start Application') {
             steps {
                 bat '''
-                start /B npm start
-                timeout /T 5
+                    start /B npm start
+                    ping 127.0.0.1 -n 6 > nul
                 '''
             }
         }
