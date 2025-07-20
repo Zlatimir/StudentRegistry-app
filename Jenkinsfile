@@ -25,8 +25,10 @@ pipeline {
 
         stage('Start Application') {
             steps {
-                bat 'start /B npm start'
-                bat 'timeout /T 5'
+                bat '''
+                start /B npm start
+                timeout /T 5
+                '''
             }
         }
 
