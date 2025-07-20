@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         NODE_VERSION = '18'
+        NVM_DIR = "${HOME}/.nvm"
     }
 
     stages {
@@ -12,12 +13,12 @@ pipeline {
             }
         }
 
-        stage('Install Node.js') {
+        stage('Install Node.js via NVM') {
             steps {
                 sh '''
                     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
                     export NVM_DIR="$HOME/.nvm"
-                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh"
                     nvm install $NODE_VERSION
                     nvm use $NODE_VERSION
                     node -v
@@ -30,7 +31,7 @@ pipeline {
             steps {
                 sh '''
                     export NVM_DIR="$HOME/.nvm"
-                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh"
                     nvm use $NODE_VERSION
                     npm install
                 '''
@@ -41,9 +42,9 @@ pipeline {
             steps {
                 sh '''
                     export NVM_DIR="$HOME/.nvm"
-                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh"
                     nvm use $NODE_VERSION
-                    npm start &
+                    nohup npm start &
                 '''
             }
         }
@@ -52,17 +53,5 @@ pipeline {
             steps {
                 sh '''
                     export NVM_DIR="$HOME/.nvm"
-                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-                    nvm use $NODE_VERSION
-                    npm test
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline completed.'
-        }
-    }
-}
+                    [ -s "$NVM_DIR/nvm.sh" ] && \\. "$NVM_DIR/nvm.sh"
+                    nvm use $NODE_VERSI_
